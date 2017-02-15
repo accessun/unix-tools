@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Populate .gitkeep files in all empty directories in a set of specified directories
+# in order to make git keep track of the directory structure.
+
+for baseDir in "$@"; do
+    echo "Populating .gitkeep file in '$baseDir'"
+    find "${baseDir}" -depth -type d -empty -print0 | xargs -0 -I{} touch "{}"/.gitkeep
+done

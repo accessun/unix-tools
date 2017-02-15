@@ -1,0 +1,23 @@
+[user]
+    email = accessun@hotmail.com
+    name = Xin Sun
+[gui]
+        encoding = utf-8
+[alias]
+    lg = log --graph --pretty=oneline --decorate --abbrev-commit --all -10
+    ll = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --all
+    st = status
+    cm = commit
+    ck = checkout
+    br = branch
+    rs = reset
+    f = fetch -v
+    m = merge
+[core]
+    autocrlf = false
+    quotepath = false
+[i18n]
+    commitencoding = utf-8
+    logoutputencoding = utf-8
+[i18n "commit"]
+    encoding = utf-8

@@ -1,0 +1,40 @@
+alias cd..='cd ..'
+alias ..='cd ..'
+alias ..2='cd ../..'
+alias ..3='cd ../../..'
+alias ..4='cd ../../../..'
+alias ..5='cd ../../../../..'
+alias ..6='cd ../../../../../..'
+
+alias ex='explorer .'
+
+alias vi='vim'
+alias cdd='cd C:/Users/xin/Desktop'
+alias cdu='cd C:/Users/xin'
+alias prettyjson='python -m json.tool'
+alias mkdir='mkdir -p'
+alias cata='cat -A'
+
+# avoid cygwin prompt wrapping of lines of the same line
+export TERM='cygwin'
+
+source ~/.git-completion.bash
+source ~/.git-prompt.sh
+export GIT_PS1_SHOWDIRTYSTATE=1
+export PATH=$PATH:/home/xin/bin
+
+dec2bin() {
+    echo "obase=2;$1" | bc;
+}
+
+bin2dec() {
+    echo "ibase=2;$1" | bc;
+}
+
+trl() {
+    if [[ -z "$1" ]]; then
+        tree -C . | less -r;
+    else
+        tree -C "$1" | less -r;
+    fi
+}

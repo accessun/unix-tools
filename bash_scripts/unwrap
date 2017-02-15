@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Unwrap directory which has a single sub-directory that has the same name as its parent.
+# For example:
+#
+#     my test folder/
+#     └── my test folder/
+#         └── myfile.txt
+#
+# will be converted to
+#
+#     my test folder/
+#     └── myfile.txt
+
+var="${1%%/}"
+
+[[ $(ls "$var" | wc -l) != 1 ]] && { echo "Has more than 1 subdir!"; exit 1; }
+
+[[ $(command ls -Q "$var") != "\"$var\"" ]] && { echo "subdir's name not correct!"; exit 1; }
+
+echo "Directory to unwrap: ${1}..."
+
+tmpName="$var"-$RANDOM
+origName="$var"
+
+mv "$origName" "$tmpName"
+
+mv "$tmpName"/"$origName" "$origName"
+
+rmdir "$tmpName"
+
+echo "Done!"
