@@ -24,17 +24,23 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 export PATH=$PATH:/home/xin/bin
 
 dec2bin() {
-    echo "obase=2;$1" | bc;
+    bc <<< "obase=2;$1";
 }
 
 bin2dec() {
-    echo "ibase=2;$1" | bc;
+    bc <<< "ibase=2;$1";
 }
 
-trl() {
-    if [[ -z "$1" ]]; then
-        tree -C . | less -r;
-    else
-        tree -C "$1" | less -r;
+line() {
+    if [[ "$1" = help ]]; then
+        cat <<EOF
+print 3rd line:
+    line 3 <filename>
+
+print 3rd to 10th line:
+    line 3,10 <filename>
+EOF
+        return;
     fi
+    sed -n "${1}p" < "${2}"
 }
