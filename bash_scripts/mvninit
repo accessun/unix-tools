@@ -1,0 +1,74 @@
+#!/bin/bash
+
+# Initialize a maven project. Both regular Java project and Java web project
+# are supported.
+
+function usage() {
+  cat <<'EOF'
+usage:
+  mvninit <type> <groupId> <artifactId> [version]
+      initialize a maven project
+  mvninit [-h|--help]
+      display help information
+
+  Specify `jar' or `war' for <type> argument. If version was not specified,
+  default version `1.0.0-SNAPSHOT' is used instead.
+EOF
+}
+
+if [[ "$1" = -h ]] || [[ "$1" = --help ]]; then
+  usage
+  exit 0;
+fi
+
+if [[ "$#" < 3 ]]; then
+  echo "Wrong argument number"
+  usage
+  exit 1
+fi
+
+projectType="war"; [[ "$1" != 'war' ]] && projectType="jar"
+groupId="$2"
+artifactId="$3"
+version="1.0.0-SNAPSHOT"; [[ "$4" != '' ]] && version="$4"
+
+projectName="$artifactId"
+
+webappPath="$projectName/src/main/webapp"
+
+pomPath="$projectName/pom.xml"
+pomContent="<project xmlns=\"http://maven.apache.org/POM/4.0.0\" \
+xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \
+xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 \
+http://maven.apache.org/xsd/maven-4.0.0.xsd\">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>$groupId</groupId>
+  <artifactId>$artifactId</artifactId>
+  <version>$version</version>
+  <packaging>$projectType</packaging>\n
+</project>"
+
+manifestPath="$webappPath/META-INF/MANIFEST.MF"
+manifestContent="Manifest-Version: 1.0\nClass-Path: \n"
+
+webXmlPath="$webappPath/WEB-INF/web.xml"
+webXmlContent="<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<web-app xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \
+xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\" \
+xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee \
+http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd\" \
+id=\"WebApp_ID\" version=\"3.1\">\n\n</web-app>"
+
+mkdir -p "$projectName"/src/{main,test}/{java,resources}
+
+echo -e "$pomContent" > "$pomPath"
+
+[[ "$projectType" = jar ]] && { echo "MAVEN JAVA PROJECT INIT COMPLETED"; exit 0; }
+
+mkdir -p "$webappPath"/{META-INF,WEB-INF/lib}
+
+echo -e "$manifestContent" > "$manifestPath"
+echo -e "$webXmlContent" > "$webXmlPath"
+
+echo "MAVEN WEB PROJECT INIT COMPLETED"
+exit 0
