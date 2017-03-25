@@ -6,7 +6,8 @@ alias ..4='cd ../../../..'
 alias ..5='cd ../../../../..'
 alias ..6='cd ../../../../../..'
 
-alias ex='explorer .'
+alias ex='explorer .' # explorer.exe in Windows
+#alias nau='nautilus .' # nautilus manager in Linux
 
 alias vi='vim'
 alias cdd='cd C:/Users/xin/Desktop'
