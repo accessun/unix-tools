@@ -1,0 +1,35 @@
+#!/bin/bash
+
+usage() {
+	cat <<'EOF'
+
+  Create a list of executable basic template scripts for bash scripting:
+
+    stouch FILE_1 ... FILE_N
+
+  See help:
+    
+    stouch -h | --help
+
+EOF
+}
+
+if [[ $# = 0 ]]; then
+	echo 'No argument provided. See `stouch -h` for details.'
+	exit 1
+fi
+
+if [[ "$1" = "-h" ]] || [[ "$1" = "--help" ]]; then
+	usage
+	exit 0
+fi
+
+for file in "$@"; do
+	if [[ -e "$file" ]]; then
+		echo "File already exists: '$file'"
+	else
+		touch "$file"
+		echo '#!/bin/bash' >> "$file"
+		chmod +x "$file"
+	fi
+done
