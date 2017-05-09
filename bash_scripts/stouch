@@ -2,15 +2,11 @@
 
 usage() {
 	cat <<'EOF'
-
+Usage:
   Create a list of executable basic template scripts for bash scripting:
-
     stouch FILE_1 ... FILE_N
-
   See help:
-    
     stouch -h | --help
-
 EOF
 }
 

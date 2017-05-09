@@ -5,7 +5,7 @@
 
 function usage() {
   cat <<'EOF'
-usage:
+Usage:
   mvninit <type> <groupId> <artifactId> [version]
       initialize a maven project
   mvninit [-h|--help]
