@@ -1,0 +1,62 @@
+#!/bin/bash
+
+# Quick bash script to look up the current bitcoin exchange rate for CNY and
+# USD and convert between bitcoin and real currency
+
+curr_rate=$(curl "https://blockchain.info/ticker" 2>/dev/null | sed 's/ //g')
+cny=$(jq ".CNY" <<<"$curr_rate")
+usd=$(jq ".USD" <<<"$curr_rate")
+cny_rate=$(jq ".last" <<<"$cny")
+usd_rate=$(jq ".last" <<<"$usd")
+
+m15_title="Last 15 mins:"
+last_title="Most recent: "
+buy_title="Buy:         "
+sell_title="Sell:        "
+
+cat <<EOF
+CURRENT BTC EXCHANGE RATE
+========== CNY ==========
+  ${m15_title} $(jq '.["15m"]' <<<"${cny}")
+  ${last_title} $(jq ".last" <<<"${cny}")
+  ${buy_title} $(jq ".buy" <<<"${cny}")
+  ${sell_title} $(jq ".sell" <<<"${cny}")
+
+========== USD ==========
+  ${m15_title} $(jq '.["15m"]' <<<"${usd}")
+  ${last_title} $(jq ".last" <<<"${usd}")
+  ${buy_title} $(jq ".buy" <<<"${usd}")
+  ${sell_title} $(jq ".sell" <<<"${usd}")
+EOF
+
+echo -e '\n'
+
+while true; do
+  read -p "Select a conversion
+  1. BTC to RMB
+  2. RMB to BTC
+  3. BTC to USD
+  4. USD to BTC
+  (Enter q to quit, default 1): " conv_type
+
+  [ -z "$conv_type" ] && conv_type=1
+  [ "$conv_type" = "q" ] && exit 0
+
+  read -p "Amount: " amount
+
+  case "$conv_type" in
+    1)
+      res=$(bc <<<"scale=2; ${amount} * ${cny_rate}") ;;
+    2)
+      res=$(printf "%0.7f\n" $(bc <<<"scale=7; ${amount} / ${cny_rate}")) ;;
+    3)
+      res=$(bc <<<"scale=2; ${amount} * ${usd_rate}") ;;
+    4)
+      res=$(printf "%0.7f\n" $(bc <<<"scale=7; ${amount} / ${usd_rate}")) ;;
+    *)
+      echo "Unsupported option. Exit"
+      exit 1 ;;
+  esac
+
+  echo -e "Result: ${res}\n"
+done
