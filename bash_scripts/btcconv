@@ -3,33 +3,25 @@
 # Quick bash script to look up the current bitcoin exchange rate for CNY and
 # USD and convert between bitcoin and real currency
 
-curr_rate=$(curl "https://blockchain.info/ticker" 2>/dev/null | sed 's/ //g')
-cny=$(jq ".CNY" <<<"$curr_rate")
-usd=$(jq ".USD" <<<"$curr_rate")
-cny_rate=$(jq ".last" <<<"$cny")
-usd_rate=$(jq ".last" <<<"$usd")
+# http://www.coindesk.com/api/
+# Alternative: https://blockchain.info/api/exchange_rates_api
+curr_rate=$(curl "http://api.coindesk.com/v1/bpi/currentprice/CNY.json" 2>/dev/null)
+cny_rate=$(jq ".bpi.CNY.rate_float" <<<"$curr_rate")
+usd_rate=$(jq ".bpi.USD.rate_float" <<<"$curr_rate")
+curr_time=$(jq ".time.updatedISO" <<<"$curr_rate")
 
-m15_title="Last 15 mins:"
-last_title="Most recent: "
-buy_title="Buy:         "
-sell_title="Sell:        "
+title="Most recent:"
 
 cat <<EOF
 CURRENT BTC EXCHANGE RATE
+=== $(sed -e 's/T/ /g' -e 's/"//g' <<<${curr_time%+*}) UTC ===
 ========== CNY ==========
-  ${m15_title} $(jq '.["15m"]' <<<"${cny}")
-  ${last_title} $(jq ".last" <<<"${cny}")
-  ${buy_title} $(jq ".buy" <<<"${cny}")
-  ${sell_title} $(jq ".sell" <<<"${cny}")
+  ${title} ${cny_rate}
 
 ========== USD ==========
-  ${m15_title} $(jq '.["15m"]' <<<"${usd}")
-  ${last_title} $(jq ".last" <<<"${usd}")
-  ${buy_title} $(jq ".buy" <<<"${usd}")
-  ${sell_title} $(jq ".sell" <<<"${usd}")
-EOF
+  ${title} ${usd_rate}
 
-echo -e '\n'
+EOF
 
 while true; do
   read -p "Select a conversion
