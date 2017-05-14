@@ -1,10 +1,15 @@
 #!/bin/bash
-
+#
 # Quick bash script to look up the current bitcoin exchange rate for CNY and
-# USD and convert between bitcoin and real currency
+# USD and convert between bitcoin and real currency.
+#
+# This script assumes that you have sed, bc, jq installed. If you haven't,
+# run `sudo apt-get install sed bc jq` if you are using a Debian based distro.
+#
+# API reference:
+#   http://www.coindesk.com/api/
+#   https://blockchain.info/api/exchange_rates_api (alternative)
 
-# http://www.coindesk.com/api/
-# Alternative: https://blockchain.info/api/exchange_rates_api
 curr_rate=$(curl "http://api.coindesk.com/v1/bpi/currentprice/CNY.json" 2>/dev/null)
 cny_rate=$(jq ".bpi.CNY.rate_float" <<<"$curr_rate")
 usd_rate=$(jq ".bpi.USD.rate_float" <<<"$curr_rate")
