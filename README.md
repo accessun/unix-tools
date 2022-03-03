@@ -1,4 +1,4 @@
-### Unix Stuff
+### Unix Tools
 
 `bash_scripts`: a collection of bash scripts that I use daily.
 
